@@ -51,6 +51,78 @@ const config: Config = {
           "5": "hsl(var(--chart-5))",
         },
       },
+      keyframes: {
+        "circular-dash": {
+          "0%": {
+            "stroke-dasharray": "1px, 200px",
+            "stroke-dashoffset": "0",
+          },
+          "20%": {
+            "stroke-dasharray": "100px, 200px",
+            "stroke-dashoffset": "-15px",
+          },
+          "40%": {
+            "stroke-dasharray": "251.33px, 251.33px", // Longitud total aproximada del círculo (2πr para r=40)
+            "stroke-dashoffset": "0",
+          },
+          "100%": {
+            "stroke-dasharray": "251.33px, 251.33px",
+            "stroke-dashoffset": "0",
+          },
+        },
+        jump: {
+          "0%": { transform: "scale(0.8)", opacity: "0" },
+          "40%": { transform: "scale(0.8)", opacity: "0" },
+          "42%": { opacity: "1" },
+          "50%": { transform: "scale(1.4)" },
+          "60%": { transform: "scale(1)" },
+          "70%": { transform: "scale(1.3)" },
+          "80%": { transform: "scale(1)" },
+          "100%": { transform: "scale(1)", opacity: "1" },
+        },
+        "failed-circular-dash": {
+          "0%": {
+            "stroke-dasharray": "1px, 200px",
+            "stroke-dashoffset": "0",
+          },
+          "10%": {
+            "stroke-dasharray": "50px, 300px",
+            "stroke-dashoffset": "20px",
+          },
+          "20%": {
+            "stroke-dasharray": "50px, 251.33px",
+            "stroke-dashoffset": "10px",
+          },
+          "30%": {
+            "stroke-dasharray": "50px, 300px",
+            "stroke-dashoffset": "20px",
+          },
+          "35%": {
+            "stroke-dasharray": "60px, 251.33px",
+            "stroke-dashoffset": "10px",
+          },
+          "40%": {
+            "stroke-dasharray": "0px, 260px",
+            "stroke-dashoffset": "-1px",
+            "stroke-width": "1",
+          },
+          "41%": {
+            "stroke-width": "0",
+          },
+          "100%": {
+            "stroke-dasharray": "0px, 260px",
+            "stroke-dashoffset": "-1px",
+            "stroke-width": "0",
+          },
+        },
+        "noise-content": {
+          "0%": { transform: "scale(1)", opacity: "0" },
+          "45%": { transform: "scale(1)", opacity: "0" },
+          "50%": { transform: "scale(1.05)", opacity: "1" },
+          "55%": { transform: "scale(1)" },
+          "100": { transform: "scale(1)", opacity: "1" },
+        },
+      },
       fontFamily: {
         sans: ["var(--font-roboto)", "sans-serif"],
         geist: ["var(--font-geist-sans)", "sans-serif"],
@@ -60,6 +132,12 @@ const config: Config = {
         lg: "var(--radius)",
         md: "calc(var(--radius) - 2px)",
         sm: "calc(var(--radius) - 4px)",
+      },
+      animation: {
+        "circular-dash": "circular-dash 3s ease-in-out infinite",
+        jump: "jump 3s ease-in-out infinite",
+        "failed-circular-dash": "failed-circular-dash 3s ease-in-out infinite",
+        "noise-content": "noise-content 3s ease-in-out forwards",
       },
     },
   },

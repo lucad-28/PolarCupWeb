@@ -1,4 +1,5 @@
 "use client";
+import { toastVariables } from "@/components/ToastVariables";
 import { Button } from "@/components/ui/button";
 import { Snowflake } from "lucide-react";
 import { signOut, useSession, signIn } from "next-auth/react";

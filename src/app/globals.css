@@ -85,3 +85,7 @@
     @apply text-xl font-semibold;
   }
 }
+
+.input {
+  @apply bg-background focus:border-foreground focus:ring-1 focus:ring-secondary focus:outline-none p-2 rounded-md;
+}
