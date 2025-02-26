@@ -3,5 +3,5 @@ export interface Device {
   createdAt: Date;
   temperature?: number;
   volume?: number;
-  cooling?: boolean;
+  cooling?: number;
 }

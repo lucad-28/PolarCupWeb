@@ -132,8 +132,8 @@ export default function Page() {
                 />
                 <StatCard
                   title="Enfriando"
-                  value={selectedDevice.cooling ? "Si" : "No"}
-                  icon={selectedDevice.cooling ? Wind : Waves}
+                  value={selectedDevice.cooling === 1 ? "Si" : "No"}
+                  icon={selectedDevice.cooling === 1 ? Wind : Waves}
                 />
               </div>
             </div>
