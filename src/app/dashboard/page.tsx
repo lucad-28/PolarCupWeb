@@ -30,7 +30,7 @@ export default function Page() {
     const fethInit = async () => {
       const devices = session?.user?.devices;
 
-      if (!devices) return;
+      if (!devices || devices.length === 0) return;
 
       const _devices = await devS.getDevicesByIds(devices);
       setDevices(_devices);
