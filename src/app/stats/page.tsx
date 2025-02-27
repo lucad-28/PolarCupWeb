@@ -14,6 +14,7 @@ import {
 import { ValueType } from "recharts/types/component/DefaultTooltipContent";
 import { GalleryHorizontalEnd, GalleryVertical } from "lucide-react";
 import { SingleSelect } from "@/components/SingleSelect";
+import { Checkbox } from "@/components/ui/checkbox";
 
 const _TABS: Tab[] = [
   {
@@ -34,6 +35,7 @@ const _TABS: Tab[] = [
 export default function Page() {
   const [history, setHistory] = useState<History[]>([]);
   const [resampled, setResampled] = useState<History[]>([]);
+  const [displayResampled, setDisplayResampled] = useState<History[]>([]);
   const [activeTab, setActiveTab] = useState<Tab>(_TABS[0]);
   const [devices, setDevices] = useState<string[]>([]);
   const [selectedDevice, setSelectedDevice] = useState<string>();
@@ -45,6 +47,19 @@ export default function Page() {
         const _devices = _h.map((h) => h.deviceId);
 
         setResampled(_hResampled);
+        setDisplayResampled(
+          _hResampled.map((h) => {
+            return {
+              ...h,
+              data: h.data.filter(
+                (d) =>
+                  d.temperature !== null ||
+                  d.volume !== null ||
+                  d.cooling !== null
+              ),
+            };
+          })
+        );
         setHistory(_h);
         setDevices(_devices);
       } catch (err) {
@@ -93,6 +108,38 @@ export default function Page() {
           </div>
         )}
 
+        {activeTab.id === "all" && (
+          <div className="w-full sm:w-1/2 lg:w-1/3">
+            <div className="w-full flex flex-row space-x-2">
+              <Checkbox
+                defaultChecked={false}
+                onCheckedChange={(checked) => {
+                  if (!checked)
+                    setDisplayResampled((prev) => {
+                      return prev.map((h) => {
+                        return {
+                          ...h,
+                          data: h.data.filter(
+                            (d) =>
+                              d.temperature !== null ||
+                              d.volume !== null ||
+                              d.cooling !== null
+                          ),
+                        };
+                      });
+                    });
+                  else {
+                    setDisplayResampled(resampled);
+                  }
+                }}
+              />
+              <span className="font-light text-sm">
+                Mostrar vacios en lectura
+              </span>
+            </div>
+          </div>
+        )}
+
         <div className="w-full h-full flex flex-col items-center justify-center">
           <span className="font-light text-sm">
             Datos de temperatura recolectados
@@ -111,17 +158,15 @@ export default function Page() {
               }
             />
             {activeTab.id === "all" ? (
-              resampled.map((h) => (
-                <>
-                  <Line
-                    key={h.deviceId}
-                    name={h.deviceId}
-                    type="monotone"
-                    dataKey="temperature"
-                    stroke="#59150E"
-                    data={h.data}
-                  />
-                </>
+              displayResampled.map((h) => (
+                <Line
+                  key={h.deviceId}
+                  name={h.deviceId}
+                  type="monotone"
+                  dataKey="temperature"
+                  stroke="#59150E"
+                  data={h.data}
+                />
               ))
             ) : (
               <Line
@@ -153,17 +198,15 @@ export default function Page() {
               }
             />
             {activeTab.id === "all" ? (
-              resampled.map((h) => (
-                <>
-                  <Line
-                    key={h.deviceId}
-                    name={h.deviceId}
-                    type="monotone"
-                    dataKey="volume"
-                    stroke="#3E606F"
-                    data={h.data}
-                  />
-                </>
+              displayResampled.map((h) => (
+                <Line
+                  key={h.deviceId}
+                  name={h.deviceId}
+                  type="monotone"
+                  dataKey="volume"
+                  stroke="#3E606F"
+                  data={h.data}
+                />
               ))
             ) : (
               <Line
@@ -195,17 +238,15 @@ export default function Page() {
               }
             />
             {activeTab.id === "all" ? (
-              resampled.map((h) => (
-                <>
-                  <Line
-                    key={h.deviceId}
-                    name={h.deviceId}
-                    type="monotone"
-                    dataKey="cooling"
-                    stroke="#10403B"
-                    data={h.data}
-                  />
-                </>
+              displayResampled.map((h) => (
+                <Line
+                  key={h.deviceId}
+                  name={h.deviceId}
+                  type="monotone"
+                  dataKey="cooling"
+                  stroke="#10403B"
+                  data={h.data}
+                />
               ))
             ) : (
               <Line
