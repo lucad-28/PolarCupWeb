@@ -143,9 +143,13 @@ export default function Page() {
           )}
         </div>
       ) : (
-        <div>
-          <span>No tiene dispositivos registrados, agregue uno</span>
-          <DeviceForm />
+        <div className="max-w-screen-lg w-full h-full grid grid-rows-[auto,1fr]">
+          <div className="w-full flex flex-1 flex-col space-y-4 mt-4 p-4 border border-gray-200 bg-primary/60 rounded-lg shadow-lg">
+            <span className="mx-4 font-light">
+              No tiene dispositivos registrados, agregue uno
+            </span>
+            <DeviceForm />
+          </div>
         </div>
       )}
     </div>
