@@ -94,6 +94,9 @@ export default function Page() {
         )}
 
         <div className="w-full h-full flex items-center justify-center">
+          <span className="font-light text-sm">
+            Datos de temperatura recolectados
+          </span>
           <LineChart
             width={600}
             height={300}
@@ -109,14 +112,16 @@ export default function Page() {
             />
             {activeTab.id === "all" ? (
               resampled.map((h) => (
-                <Line
-                  key={h.deviceId}
-                  name={h.deviceId}
-                  type="monotone"
-                  dataKey="temperature"
-                  stroke="#8884d8"
-                  data={h.data}
-                />
+                <>
+                  <Line
+                    key={h.deviceId}
+                    name={h.deviceId}
+                    type="monotone"
+                    dataKey="temperature"
+                    stroke="#59150E"
+                    data={h.data}
+                  />
+                </>
               ))
             ) : (
               <Line
@@ -124,7 +129,91 @@ export default function Page() {
                 name={selectedDevice}
                 type="monotone"
                 dataKey="temperature"
-                stroke="#8884d8"
+                stroke="#59150E"
+                data={
+                  history.find((h) => h.deviceId === selectedDevice)?.data ?? []
+                }
+              />
+            )}
+          </LineChart>
+          <span className="font-light text-sm">
+            Datos de volumen recolectados
+          </span>
+          <LineChart
+            width={600}
+            height={300}
+            margin={{ top: 5, right: 20, bottom: 5, left: 0 }}
+          >
+            <CartesianGrid stroke="#ccc" strokeDasharray="5 5" />
+            <XAxis dataKey="timestamp" tickFormatter={formatDate} />
+            <YAxis interval={"preserveStart"} dataKey={"volume"} />
+            <Tooltip
+              labelFormatter={(value: ValueType) =>
+                formatDate(new Date(value as number))
+              }
+            />
+            {activeTab.id === "all" ? (
+              resampled.map((h) => (
+                <>
+                  <Line
+                    key={h.deviceId}
+                    name={h.deviceId}
+                    type="monotone"
+                    dataKey="volume"
+                    stroke="#3E606F"
+                    data={h.data}
+                  />
+                </>
+              ))
+            ) : (
+              <Line
+                key={selectedDevice}
+                name={selectedDevice}
+                type="monotone"
+                dataKey="volume"
+                stroke="#3E606F"
+                data={
+                  history.find((h) => h.deviceId === selectedDevice)?.data ?? []
+                }
+              />
+            )}
+          </LineChart>
+          <span className="font-light text-sm">
+            Datos de enfriamiento recolectados
+          </span>
+          <LineChart
+            width={600}
+            height={300}
+            margin={{ top: 5, right: 20, bottom: 5, left: 0 }}
+          >
+            <CartesianGrid stroke="#ccc" strokeDasharray="5 5" />
+            <XAxis dataKey="timestamp" tickFormatter={formatDate} />
+            <YAxis interval={"preserveStart"} dataKey={"cooling"} />
+            <Tooltip
+              labelFormatter={(value: ValueType) =>
+                formatDate(new Date(value as number))
+              }
+            />
+            {activeTab.id === "all" ? (
+              resampled.map((h) => (
+                <>
+                  <Line
+                    key={h.deviceId}
+                    name={h.deviceId}
+                    type="monotone"
+                    dataKey="cooling"
+                    stroke="#10403B"
+                    data={h.data}
+                  />
+                </>
+              ))
+            ) : (
+              <Line
+                key={selectedDevice}
+                name={selectedDevice}
+                type="monotone"
+                dataKey="cooling"
+                stroke="#10403B"
                 data={
                   history.find((h) => h.deviceId === selectedDevice)?.data ?? []
                 }
