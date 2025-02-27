@@ -93,7 +93,7 @@ export default function Page() {
           </div>
         )}
 
-        <div className="w-full h-full flex items-center justify-center">
+        <div className="w-full h-full flex flex-col items-center justify-center">
           <span className="font-light text-sm">
             Datos de temperatura recolectados
           </span>
