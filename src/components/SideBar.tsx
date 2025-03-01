@@ -12,7 +12,13 @@ import { Avatar, AvatarImage } from "@/components/ui/avatar";
 import { cn } from "@/lib/utils";
 import { VisuallyHidden } from "@/components/ui/visually-hidden";
 import { Session } from "next-auth";
-import { LogOut, NotebookPen, SquareDashedKanban } from "lucide-react";
+import {
+  LogOut,
+  NotebookPen,
+  SquareDashedKanban,
+  ChartLine,
+  ShieldPlus,
+} from "lucide-react";
 import { useRouter } from "next/navigation";
 
 interface Option {
@@ -62,7 +68,9 @@ export const SideBar = ({ session, options }: SideBarProps) => {
             <h2 className="text-2xl font-bold mb-4">Menú de Usuario</h2>
             <div className="space-y-4">
               <MenuOptions
-                options={options || [DashboardRoute, AddDeviceRoute]}
+                options={
+                  options || getElementRouteByRole(session.user.role || "user")
+                }
                 onClose={() => setOpen(false)}
               />
             </div>
@@ -120,4 +128,26 @@ const DashboardRoute: Option = {
   label: "Dashboard",
   icon: <SquareDashedKanban className="mr-2 h-4 w-4" />,
   onRedirect: (router) => router.replace("/dashboard"),
+};
+
+const StatsRoute: Option = {
+  label: "Estadísticas",
+  icon: <ChartLine className="mr-2 h-4 w-4" />,
+  onRedirect: (router) => router.replace("/stats"),
+};
+
+const AdminRoute: Option = {
+  label: "Administrar",
+  icon: <ShieldPlus className="mr-2 h-4 w-4" />,
+  onRedirect: (router) => router.replace("/admin"),
+};
+
+const RouteByRole: Record<"admin" | "user", Option[]> = {
+  admin: [DashboardRoute, AddDeviceRoute, StatsRoute, AdminRoute],
+  user: [DashboardRoute, AddDeviceRoute],
+};
+
+const getElementRouteByRole = (role: "admin" | "user") => {
+  if (role === "admin") return RouteByRole.admin;
+  return RouteByRole.user;
 };

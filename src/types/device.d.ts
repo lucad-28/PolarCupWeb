@@ -5,3 +5,7 @@ export interface Device {
   volume?: number;
   cooling?: number;
 }
+
+export interface DeviceUser extends Device {
+  usersEmails: string[];
+}

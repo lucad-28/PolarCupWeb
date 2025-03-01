@@ -21,7 +21,7 @@ export const options: NextAuthOptions = {
   callbacks: {
     async jwt({ token }) {
       if (token) {
-        if (token.email) {
+        if (token.email && typeof token.email === "string") {
           try {
             const devices = await userS.getUserDevicesByEmail(token.email);
             token.devices = devices;
@@ -29,13 +29,24 @@ export const options: NextAuthOptions = {
             const { devices, ..._token } = token;
             token = _token;
           }
+
+          try {
+            const user = await userS.getUserByEmail(token.email as string);
+            if (user?.role) token.role = user.role;
+          } catch {
+            const { role, ..._token } = token;
+            token = _token;
+          }
         }
       }
       return token;
     },
     async session({ session, token }) {
+      console.log(token, session);
       if (token.sub) {
         session.user.id = token.sub;
+
+        if (token.role) session.user.role = token.role;
 
         if (token.devices) {
           session.user.devices = token.devices;

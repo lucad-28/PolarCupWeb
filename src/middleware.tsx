@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server";
 import withAuth from "next-auth/middleware";
+import { getRoutesByRole } from "@/lib/utils";
 
 export default withAuth(function middleware(req) {
   const token = req.nextauth.token;
@@ -11,7 +12,7 @@ export default withAuth(function middleware(req) {
     return NextResponse.redirect(url);
   }
 
-  if (["dashboard", "add-device"].includes(req.nextUrl.pathname)) {
+  if (!getRoutesByRole(token.role || "user").includes(req.nextUrl.pathname)) {
     url.pathname = "dashboard";
     return NextResponse.redirect(url);
   }
