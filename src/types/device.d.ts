@@ -1,9 +1,10 @@
 export interface Device {
   id: string;
   createdAt: Date;
-  temperature?: number;
-  volume?: number;
-  cooling?: number;
+  name?: string | null;
+  temperature?: number | null;
+  volume?: number | null;
+  cooling?: number | null;
 }
 
 export interface DeviceUser extends Device {

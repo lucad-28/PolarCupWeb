@@ -11,16 +11,17 @@ import { Noise } from "@/components/Noise";
 import { SingleSelect } from "@/components/SingleSelect";
 import { StatCard } from "@/components/StatCard";
 import { Thermometer, GlassWater, Wind, Waves } from "lucide-react";
+import { DashboardSkeleton } from "@/components/DashboardSkeleton";
 
 export default function Page() {
   const { data: session } = useSession();
   const [devices, setDevices] = useState<Device[]>([]);
   const [noise, setNoise] = useState<NoiseType | null>({
-    message: "Obteniendo su información....",
+    message: "Exploring your devices....",
     type: "loading",
     styleType: "page",
   });
-
+  const [loading, setLoading] = useState<boolean>(false);
   const [selectedId, setSelectedId] = useState<string>();
   const [selectedDevice, setSelectedDevice] = useState<Device>();
 
@@ -35,16 +36,39 @@ export default function Page() {
         return;
       }
 
-      const _devices = await devS.getDevicesByIds(devices);
-      setDevices(_devices);
+      const _devices = await devS.getDevicesByIds(devices.map((d) => d.id));
+
+      setDevices(
+        devices.map((d) => {
+          const _d_info = _devices.find((d) => d.id === d.id);
+
+          if (_d_info) {
+            return {
+              id: d.id,
+              name: d.name || `Device ${d.id.slice(0, 4)}`,
+              createdAt: _d_info.createdAt,
+            };
+          } else {
+            return {
+              id: d.id,
+              name: d.name || `Device ${d.id.slice(0, 4)}`,
+              createdAt: new Date(),
+            };
+          }
+        })
+      );
       setNoise(null);
     };
 
     fethInit();
-  }, []);
+  }, [session?.user.devices]);
 
   useEffect(() => {
-    if (!selectedId) return;
+    setLoading(true);
+    if (!selectedId) {
+      setLoading(false);
+      return;
+    }
     const deviceRef = ref(rdb, "devices/" + selectedId);
     console.log(`devices/${selectedId}`);
 
@@ -53,6 +77,17 @@ export default function Page() {
       (snapshot) => {
         if (!snapshot.exists()) {
           console.log("No existe el dispositivo");
+          setLoading(false);
+          setSelectedDevice({
+            id: selectedId,
+            name:
+              devices.find((d) => d.id === selectedId)?.name ||
+              `Device ${selectedId.slice(0, 4)}`,
+            createdAt: new Date(),
+            temperature: 0,
+            volume: 0,
+            cooling: 0,
+          });
           return;
         }
         console.log(snapshot.val());
@@ -72,8 +107,11 @@ export default function Page() {
               : d
           )
         );
-
+        setLoading(false);
         setSelectedDevice({
+          name:
+            devices.find((d) => d.id === selectedId)?.name ||
+            `Device ${selectedId.slice(0, 4)}`,
           id: selectedId,
           createdAt:
             devices.find((d) => d.id === selectedId)?.createdAt || new Date(),
@@ -97,14 +135,14 @@ export default function Page() {
         <div className="max-w-screen-lg w-full h-full grid grid-rows-[auto,1fr]">
           <div className="w-full flex flex-col">
             <div className="flex flex-col space-y-1 my-3">
-              <h2>Dispositivos</h2>
+              <h2>Devices</h2>
               <span className="font-light text-sm">
-                Seleccione un dispositivo para ver su información actualizada
+                Select a device to see its updated information
               </span>
             </div>
             <div className="w-full sm:w-1/2 lg:w-1/3 px-4">
               <SingleSelect
-                options={devices.map((d) => ({ label: d.id, value: d.id }))}
+                options={devices.map((d) => ({ label: d.name!, value: d.id }))}
                 value={selectedId}
                 onChange={(value) => {
                   setSelectedId(value);
@@ -112,13 +150,19 @@ export default function Page() {
               />
             </div>
           </div>
+          {loading && !selectedDevice && <DashboardSkeleton />}
           {selectedDevice && (
             <div className="w-full flex flex-1 flex-col space-y-4 mt-4 p-4 border border-gray-200 bg-primary/60 rounded-lg shadow-lg">
-              <div className="flex flex-col -space-y-1.5">
+              <div className="flex flex-col">
                 <span className="text-sm font-light text-foreground">
                   Device Selected
                 </span>
-                <h1>{selectedDevice.id}</h1>
+                <div className="flex flex-col pl-2">
+                  <h1>{selectedDevice.name}</h1>
+                  <span className="text-sm font-light text-foreground">
+                    Device Id: {selectedDevice.id}
+                  </span>
+                </div>
               </div>
               <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
                 <StatCard
@@ -146,7 +190,7 @@ export default function Page() {
         <div className="max-w-screen-lg w-full h-full grid grid-rows-[auto,1fr]">
           <div className="w-full flex flex-1 flex-col space-y-4 mt-4 p-4 border border-gray-200 bg-primary/60 rounded-lg shadow-lg">
             <span className="mx-4 font-light">
-              No tiene dispositivos registrados, agregue uno
+              You have no registered devices, please add one
             </span>
             <DeviceForm />
           </div>

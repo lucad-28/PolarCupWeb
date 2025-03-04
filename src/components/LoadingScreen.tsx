@@ -11,7 +11,7 @@ export const LoadingScreen = ({ children }: { children: React.ReactNode }) => {
         noise={{
           type: "loading",
           styleType: "page",
-          message: "Obteniendo su información....",
+          message: "Exploring your devices....",
         }}
       />
     );

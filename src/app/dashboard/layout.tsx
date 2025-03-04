@@ -17,7 +17,7 @@ export default function Layout({
 
   return (
     <main className="flex flex-col min-h-screen">
-      <NavBar title="Completar la Encuesta">
+      <NavBar title="Dashboard">
         <SideBar session={session} />
       </NavBar>
       {children}

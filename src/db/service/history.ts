@@ -9,9 +9,62 @@ export class HistoryService {
   }
 
   async getResampled(): Promise<History[]> {
-    const res = await fetch(`${_API_URL}/history/resampled`);
+    try {
+      const res = await fetch(`${_API_URL}/history/resampled`);
+      const data = await res.json();
+      return data as History[];
+    } catch (err) {
+      console.error(err);
+      throw new Error("Error fetching resampled history");
+    }
+  }
+
+  async getAllByDeviceIds(deviceIds: string[]): Promise<History[]> {
+    const res = await fetch(`${_API_URL}/history/by_devices`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ deviceIds }),
+    });
     const data = await res.json();
-    return data as History[];
+    const _h = data as History[];
+
+    return _h.map((h) => {
+      return {
+        ...h,
+        data: h.data.map((d) => {
+          return {
+            ...d,
+            timestamp: new Date(d.timestamp),
+          };
+        }),
+      };
+    });
+  }
+
+  async getResampledByDeviceIds(deviceIds: string[]): Promise<History[]> {
+    const res = await fetch(`${_API_URL}/history/resampled/by_devices`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ deviceIds }),
+    });
+    const data = await res.json();
+    const _h = data as History[];
+
+    return _h.map((h) => {
+      return {
+        ...h,
+        data: h.data.map((d) => {
+          return {
+            ...d,
+            timestamp: new Date(d.timestamp),
+          };
+        }),
+      };
+    });
   }
 }
 

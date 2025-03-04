@@ -11,8 +11,11 @@ import { NoiseType } from "@/types/noise";
 import { toastVariables } from "@/components/ToastVariables";
 
 const deviceSchema = z.object({
-  id: z.string({ message: "El id es requerido" }).min(1, {
-    message: "El id es requerido",
+  id: z.string({ message: "Device's id is required" }).min(1, {
+    message: "Device's id is required",
+  }),
+  name: z.string({ message: "Name is required" }).min(1, {
+    message: "Name is required",
   }),
 });
 
@@ -32,46 +35,50 @@ export const DeviceForm = () => {
     resolver: zodResolver(deviceSchema),
     defaultValues: {
       id: "",
+      name: "",
     },
   });
 
   const onSubmit = async (data: DeviceFormValues) => {
     try {
       setNoise({
-        message: "Agregando dispositivo...",
+        message: "Adding device...",
         type: "loading",
         styleType: "modal",
       });
 
       console.log(data);
       if (!session?.user.email) throw new Error("User not found");
-      await userS.addDeviceById(session?.user.email, data.id);
-      session.user.devices = [...(session.user.devices || []), data.id];
+      await userS.addDeviceById(session?.user.email, data);
+      session.user.devices = [
+        ...(session.user.devices || []),
+        { id: data.id, name: data.name },
+      ];
 
       setNoise(null);
       reset();
 
-      toastVariables.success("Se agrego el dispositivo correctamente.");
+      toastVariables.success("Device added successfully.");
     } catch (error) {
       setNoise(null);
       reset();
       if (error instanceof Error) {
         if (error.message === "Device not found") {
-          setError("root", {
+            setError("root", {
             type: "manual",
-            message: "Este dispositivo no existe.",
-          });
+            message: "This device does not exist.",
+            });
           return;
         } else if (error.message === "Device already added") {
           setError("id", {
             type: "manual",
-            message: "Este dispositivo ya ha sido agregado por usted.",
+            message: "This device is already added.",
           });
           return;
         }
       }
 
-      toastVariables.error("Ocurrio un error al agregar el dispositivo.");
+      toastVariables.error("Error adding device.");
       console.error(error);
     }
   };
@@ -81,9 +88,9 @@ export const DeviceForm = () => {
   return (
     <div className="flex flex-col space-y-3 m-4">
       {noise && <Noise noise={noise} />}
-      <h1>Formulario de Dispositivo</h1>
+      <h1>Device Form</h1>
       <div className="w-full flex flex-col mx-auto space-y-3 sm:w-1/2 lg:w-1/3">
-        <label>Identificador del Dispositivo</label>
+        <label>Device Id</label>
         <Controller
           control={control}
           name="id"
@@ -97,6 +104,22 @@ export const DeviceForm = () => {
           )}
         />
         {errors.id && <p className="text-red-900">{errors.id.message}</p>}
+
+        <label>Device Name</label>
+        <Controller
+          control={control}
+          name="name"
+          render={({ field }) => (
+            <input
+              {...field}
+              type="text"
+              placeholder="Primero..."
+              className="input"
+            />
+          )}
+        />
+        {errors.name && <p className="text-red-900">{errors.name.message}</p>}
+
         {errors.root && <p className="text-red-900">{errors.root.message}</p>}
         <Button onClick={handleSubmit(onSubmit)}>Submit</Button>
       </div>

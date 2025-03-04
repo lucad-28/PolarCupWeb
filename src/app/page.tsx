@@ -41,26 +41,26 @@ export default function Home() {
               signOut({ redirect: true });
             }}
           >
-            Cerrar sesión
+            Log Out
           </Button>
         ) : (
           <Button className="font-semibold text-sm" onClick={onLogin}>
-            Iniciar Sesión
+            Log In
           </Button>
         )}
       </div>
 
       <div className="w-full fixed h-1/2 flex flex-col items-center justify-center gap-2 bg-survey px-10">
-        <h2 className="text-3xl font-bold">Bienvenido</h2>
+        <h2 className="text-3xl font-bold">Welcome</h2>
         <span className="w-full text-center text-lg text-wrap">
-          Enfriamos la situación?
+          Let's keep it cold with PolarCup
         </span>
         <Button
           variant={"secondary"}
           className="font-semibold text-sm"
           onClick={onBegin}
         >
-          Comenzar
+          Begin
         </Button>
       </div>
     </div>

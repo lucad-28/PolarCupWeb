@@ -21,5 +21,5 @@ export default withAuth(function middleware(req) {
 });
 
 export const config = {
-  matcher: ["/dashboard/:path*", "/add-device/:path*", "/stats/:path*"],
+  matcher: ["/dashboard/:path*", "/add-device/:path*", "/stats/:path*", "/admin/:path*"],
 };

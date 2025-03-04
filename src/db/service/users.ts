@@ -1,4 +1,5 @@
 import userRepo from "@/db/repository/users";
+import { Device } from "@/types/device";
 
 export class UserService {
   private repo = userRepo;
@@ -11,8 +12,8 @@ export class UserService {
     return await this.repo.getUserDevicesByEmail(email);
   }
 
-  async addDeviceById(email: string, deviceId: string) {
-    return await this.repo.addDeviceById(email, deviceId);
+  async addDeviceById(email: string, data: Pick<Device, "id"> & { name: string }) {
+    return await this.repo.addDeviceById(email, data);
   }
 
   async getAllDeviceUsers() {

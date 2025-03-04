@@ -9,7 +9,7 @@ export const _API_URL = process.env.NEXT_PUBLIC_API_URL;
 
 export const allowedRoutesByRole: Record<"admin" | "user", string[]> = {
   admin: ["/dashboard", "/add-device", "/stats", "/admin"],
-  user: ["/dashboard", "/add-device"],
+  user: ["/dashboard", "/add-device", "/stats"],
 };
 
 export const getRoutesByRole = (role: "admin" | "user") => {

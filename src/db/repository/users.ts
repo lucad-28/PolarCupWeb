@@ -10,15 +10,20 @@ import {
 import { db } from "@/lib/firebase";
 import devRep from "./device";
 import { Session } from "next-auth";
-import { DeviceUser } from "@/types/device";
+import { Device, DeviceUser } from "@/types/device";
 
 export class UserRepository {
   private usersColl = collection(db, "users");
   private usersDeviceColl = collection(db, "users-devices");
   private devRepo = devRep;
 
-  async dataToUserDevice(data: DocumentData): Promise<string[]> {
-    return data.devices as string[];
+  async dataToUserDevice(data: DocumentData): Promise<Device[]> {
+    return data["devices"].map((d: { deviceId: string; name: string }) => {
+      return {
+        id: d.deviceId,
+        name: d.name,
+      };
+    });
   }
 
   async getUserByEmail(email: string): Promise<Session["user"] | null> {
@@ -41,7 +46,10 @@ export class UserRepository {
   getAllDeviceUsers = async (): Promise<DeviceUser[]> => {
     const usersSnapshot = await getDocs(this.usersDeviceColl);
     const usersData = usersSnapshot.docs.map((doc) => {
-      const data = doc.data() as { devices: string[]; email: string };
+      const data = doc.data() as {
+        devices: { deviceId: string }[];
+        email: string;
+      };
       return {
         ...data,
         id: doc.id,
@@ -52,11 +60,11 @@ export class UserRepository {
 
     usersData.forEach((user) => {
       if (!user.devices) return;
-      user.devices.forEach((deviceId) => {
-        if (!deviceUserMap.has(deviceId)) {
-          deviceUserMap.set(deviceId, []);
+      user.devices.forEach((d) => {
+        if (!deviceUserMap.has(d.deviceId)) {
+          deviceUserMap.set(d.deviceId, []);
         }
-        deviceUserMap.get(deviceId)?.push(user.email);
+        deviceUserMap.get(d.deviceId)?.push(user.email);
       });
     });
 
@@ -79,8 +87,11 @@ export class UserRepository {
     return devices;
   }
 
-  async addDeviceById(email: string, deviceId: string) {
-    const _newD = await this.devRepo.getDeviceById(deviceId);
+  async addDeviceById(
+    email: string,
+    data: Pick<Device, "id"> & { name: string }
+  ) {
+    const _newD = await this.devRepo.getDeviceById(data.id);
     if (!_newD) throw new Error("Device not found");
 
     const q = query(this.usersDeviceColl, where("email", "==", email));
@@ -90,7 +101,12 @@ export class UserRepository {
       const _newUserDev = doc(this.usersDeviceColl);
       await setDoc(_newUserDev, {
         email,
-        devices: [deviceId],
+        devices: [
+          {
+            deviceId: data.id,
+            name: data.name,
+          },
+        ],
       });
 
       return;
@@ -98,14 +114,18 @@ export class UserRepository {
 
     const _useData = _userDoc.data() as Session["user"];
 
-    if (_useData.devices?.includes(deviceId)) {
+    if (_useData.devices?.find((d) => d.id === data.id)) {
       throw new Error("Device already added");
     }
 
     const _newDevices = [
       ...(_useData.devices ? _useData.devices : []),
-      deviceId,
+      {
+        deviceId: data.id,
+        name: data.name,
+      },
     ];
+
     await setDoc(
       _userDoc.ref,
       {

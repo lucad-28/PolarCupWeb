@@ -56,7 +56,7 @@ export const SideBar = ({ session, options }: SideBarProps) => {
         </Button>
       </SheetTrigger>
       <VisuallyHidden>
-        <SheetTitle>Menú de Usuario</SheetTitle>
+        <SheetTitle>User Menu</SheetTitle>
       </VisuallyHidden>
       <SheetContent
         aria-describedby={undefined}
@@ -65,7 +65,7 @@ export const SideBar = ({ session, options }: SideBarProps) => {
       >
         <div className="flex flex-col h-full">
           <div className="flex-1">
-            <h2 className="text-2xl font-bold mb-4">Menú de Usuario</h2>
+            <h2 className="text-2xl font-bold mb-4">User Menu</h2>
             <div className="space-y-4">
               <MenuOptions
                 options={
@@ -84,7 +84,7 @@ export const SideBar = ({ session, options }: SideBarProps) => {
             }}
           >
             <LogOut className="mr-2 h-4 w-4" />
-            Cerrar sesión
+            Log Out
           </Button>
         </div>
       </SheetContent>
@@ -119,7 +119,7 @@ const MenuOptions = ({
 };
 
 const AddDeviceRoute: Option = {
-  label: "Agregar Dispositivos",
+  label: "Add Device",
   icon: <NotebookPen className="mr-2 h-4 w-4" />,
   onRedirect: (router) => router.replace("/add-device"),
 };
@@ -131,20 +131,20 @@ const DashboardRoute: Option = {
 };
 
 const StatsRoute: Option = {
-  label: "Estadísticas",
+  label: "Stats",
   icon: <ChartLine className="mr-2 h-4 w-4" />,
   onRedirect: (router) => router.replace("/stats"),
 };
 
 const AdminRoute: Option = {
-  label: "Administrar",
+  label: "Admin",
   icon: <ShieldPlus className="mr-2 h-4 w-4" />,
   onRedirect: (router) => router.replace("/admin"),
 };
 
 const RouteByRole: Record<"admin" | "user", Option[]> = {
   admin: [DashboardRoute, AddDeviceRoute, StatsRoute, AdminRoute],
-  user: [DashboardRoute, AddDeviceRoute],
+  user: [DashboardRoute, AddDeviceRoute, StatsRoute],
 };
 
 const getElementRouteByRole = (role: "admin" | "user") => {

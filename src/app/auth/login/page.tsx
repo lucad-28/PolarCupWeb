@@ -28,10 +28,10 @@ export default function Page() {
     <div className="p-6 flex flex-col items-center">
       <div className="mb-4 flex flex-col items-center">
         <h1 className="text-2xl font-bold">Login</h1>
-        <span className="text-sm">Inicia sesión con Google a continuación</span>
+        <span className="text-sm">Log in with Google below</span>
       </div>
       <Button onClick={async () => await onLogin()} className="w-full sm:w-1/2">
-        Iniciar sesión
+        Log In
       </Button>
     </div>
   );

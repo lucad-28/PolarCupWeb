@@ -20,7 +20,7 @@ export default function Page() {
   const [noise, setNoise] = useState<NoiseType | null>({
     type: "loading",
     styleType: "modal",
-    message: "Obteniendo los dispositivos",
+    message: "Getting devices...",
   });
 
   useEffect(() => {
@@ -39,7 +39,7 @@ export default function Page() {
       setNoise({
         type: "loading",
         styleType: "modal",
-        message: "Creando dispositivo",
+        message: "Creating device...",
       });
       const _tmp = new Date();
       const _devId = await devS.createDevice({
@@ -54,11 +54,11 @@ export default function Page() {
         },
       ]);
       setNoise(null);
-      toastVariables.success("Dispositivo creado correctamente");
+      toastVariables.success("Device created successfully");
     } catch (error) {
       console.error(error);
       setNoise(null);
-      toastVariables.error("Error al crear el dispositivo");
+      toastVariables.error("Error creating device");
     }
   };
 
@@ -74,9 +74,9 @@ export default function Page() {
       sortable: true,
     },
     {
-      name: "Fecha de Creación",
+      name: "Creation Date",
       selector: (row: DeviceUser) =>
-        new Date(row.createdAt).toLocaleString("es-ES", {
+        new Date(row.createdAt).toLocaleString("en-US", {
           year: "numeric",
           month: "long",
           day: "numeric",
@@ -86,13 +86,13 @@ export default function Page() {
       sortable: true,
     },
     {
-      name: "Usuarios",
+      name: "Users",
       cell: (row: DeviceUser) => (
         <Button
           variant={"secondary"}
           onClick={() => handleOpen(row.usersEmails)}
         >
-          Ver Usuarios
+          View Users
         </Button>
       ),
     },
@@ -105,12 +105,12 @@ export default function Page() {
       <div className="max-w-screen-lg w-full px-4">
         {noise && <Noise noise={noise} />}
         <div className="p-2 mt-4">
-          <h1>Pagina de administrador</h1>
+            <h1>Device Management</h1>
         </div>
 
         <div className="flex flex-col items-center sm:flex-row space-y-4 sm:space-y-0 sm:space-x-6 w-full mt-4 p-4 border border-gray-200 bg-primary/60 rounded-lg shadow-lg">
           <span className="font-bold text-xl">
-            Registrar un nuevo dispostivo
+            Register a new device
           </span>
           <div className="max-w-52 w-full">
             <Button
@@ -120,7 +120,7 @@ export default function Page() {
               }}
               className="w-full"
             >
-              Registrar
+              Create
             </Button>
           </div>
         </div>
@@ -139,7 +139,7 @@ export default function Page() {
         {open && (
           <Modal onClose={() => setOpen(false)}>
             <div className="flex flex-col max-h-[80vh] overflow-y-auto space-y-5">
-              <h2>Usuarios</h2>
+              <h2>Users</h2>
               <div className="flex flex-col justify-end space-y-2">
                 {selectedUsers.length > 0 ? (
                   selectedUsers.map((user) => {
@@ -172,7 +172,7 @@ export default function Page() {
                   })
                 ) : (
                   <span className="font-light flex-wrap text-ellipsis">
-                    No hay usuarios vinculados a este dispositivo.
+                    No users found for this device
                   </span>
                 )}
               </div>
